@@ -12,7 +12,7 @@
   | obtain it through the world-wide-web, please send a note to          |
   | license@php.net so we can mail you a copy immediately.               |
   +----------------------------------------------------------------------+
-  | Author:                                                              |
+  | Author:  lishen chen /frankchenls@outlook.com                                                            |
   +----------------------------------------------------------------------+
 */
 
@@ -71,6 +71,8 @@ PHP_METHOD(BFS, remove);
 PHP_METHOD(BFS, du);
 PHP_METHOD(BFS, location);
 PHP_METHOD(BFS, cat);
+PHP_METHOD(BFS, status);
+PHP_METHOD(BFS,changeReplicaNum);
 
 /*
  * Local variables:

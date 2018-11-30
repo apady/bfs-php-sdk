@@ -12,7 +12,7 @@
   | obtain it through the world-wide-web, please send a note to          |
   | license@php.net so we can mail you a copy immediately.               |
   +----------------------------------------------------------------------+
-  | Author:                                                              |
+  | Author: lishen chen /frankchenls@outlook.com                                                             |
   +----------------------------------------------------------------------+
 */
 
@@ -113,7 +113,9 @@ const zend_function_entry bfs_methods[] = {
     PHP_ME(BFS,  remove,           NULL, ZEND_ACC_PUBLIC)
     PHP_ME(BFS,  du,           NULL, ZEND_ACC_PUBLIC)
     PHP_ME(BFS,  location,           NULL, ZEND_ACC_PUBLIC)
-     PHP_ME(BFS,  cat,       NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(BFS,  cat,       NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(BFS,  status,       NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(BFS, changeReplicaNum,      NULL, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
 };
 PHP_METHOD(BFS, __construct)
@@ -378,6 +380,45 @@ PHP_METHOD(BFS, cat)
         bfs_object *obj = bfs_fetch_object(Z_OBJ_P((object)));
 	 if(obj->fs==NULL) RETURN_NULL();
         result=bfs_cat(obj->fs, ZSTR_VAL(path));
+         RETURN_LONG(result);
+}
+PHP_METHOD(BFS, status)
+{
+       
+     
+       const char* status_result_string;
+        long int ret;
+        
+        zval *object = getThis();
+        bfs_object *obj = bfs_fetch_object(Z_OBJ_P((object)));
+     if(obj->fs==NULL) RETURN_NULL();
+        ret=bfs_status(obj->fs, status_result_string);
+        if(status_result_string==NULL)
+            RETURN_LONG(ret);
+        RETURN_STRING(status_result_string);
+        
+}
+
+PHP_METHOD(BFS,changeReplicaNum)
+{
+        zend_string *path;
+        zend_string *replica_num;
+        long int result;
+        #ifndef FAST_ZPP
+    /* Get function parameters and do error-checking. */
+    if (zend_parse_parameters(ZEND_NUM_ARGS(), "SS",&path,&replica_num) == FAILURE) {
+        return;
+       }
+     #else
+         ZEND_PARSE_PARAMETERS_START(2, 2)
+         Z_PARAM_STR(path)
+         Z_PARAM_STR(replica_num)
+        ZEND_PARSE_PARAMETERS_END();
+     #endif
+        zval *object = getThis();
+        bfs_object *obj = bfs_fetch_object(Z_OBJ_P((object)));
+     if(obj->fs==NULL) RETURN_NULL();
+        result=bfs_change_replica_num(obj->fs, ZSTR_VAL(path),  ZSTR_VAL(replica_num));
          RETURN_LONG(result);
 }
 

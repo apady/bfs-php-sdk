@@ -149,9 +149,9 @@ class FileSystem
     public function status(){
 
         $res=$this->bfs->status();
-        if (\is_numeric($res) {
+        if (\is_numeric($res)) {
               throw new IOException(sprintf(' Get BFS status failed, exception: %s.'
-               ,$this->getResponseStatus($size), 0, null, null);
+               ,$this->getResponseStatus($res),0, null, null));
         }
         return $res;
 

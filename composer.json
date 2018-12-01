@@ -12,6 +12,7 @@
             "email": "frankchenls@outlook.com"
         }
     ],
+     "minimum-stability": "stable",
     "autoload": {
         "psr-4": { "BFS\\": "lib/" }
     }

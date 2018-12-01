@@ -2,7 +2,10 @@
 /**
  * @author lishen chen <frankchenls@outlook.com>
  */
-namespace AppBundle\Service;
+namespace BFS;
+
+use BFS\Exception\IOException;
+use BFS\Exception\FileNotFoundException;
 
 
 class FileSystem
@@ -33,53 +36,81 @@ class FileSystem
         return $this->response_list[-$result];
     }
 
+
     public function __construct($bfs_flag_file_path){
 
         $this->bfs=new \BFS();
         $this->bfs->init($bfs_flag_file_path);
     }
-    public function mkdir($dirs){
-        $fail_list=array();
-        foreach ($this->toIterable($dirs) as $dir) {
+
+
+    public function mkdir($dir){
+        
            $res=$this->bfs->mkdir($dir);
-           if($res!=0)
-               $fail_list[$dir]=$this->getResponseStatus($res);
-        }
-        return $fail_list;
-
+           if($res!=0){
+            throw new IOException(sprintf('Create Directory  "%s" failed, exception: %s.',
+             $dir,$this->getResponseStatus($res)), 0, null, $dir);
+            
+           }
+        
     }
-    public function rmdir($dirs,$recursive=true){
-        $fail_list=array();
-        foreach ($this->toIterable($dirs) as $dir) {
+
+
+    public function rmdir($dir,$recursive=true){
+               
             $res=$this->bfs->rmdir($dir,$recursive);
-            if($res!=0)
-                $fail_list[$dir]=$this->getResponseStatus($res);
+            if($res!=0){
+                 throw new IOException(sprintf('Remove Directory  "%s" failed, exception: %s.',
+             $dir,$this->getResponseStatus($res)), 0, null, $dir);
+            }
+                
         }
-        return $fail_list;
 
-    }
-    public function remove($files){
-        $fail_list=array();
-        foreach ($this->toIterable($files) as $file) {
+
+    public function remove($file){
+             
             $res=$this->bfs->remove($file);
-            if($res!=0)
-                $fail_list[$file]=$this->getResponseStatus($res);
-        }
-        return $fail_list;
-
+            if($res!=0){
+             throw new IOException(sprintf('Remove file  "%s" failed, exception: %s.',
+             $file,$this->getResponseStatus($res)), 0, null, $file);
+            }      
     }
-    public function rename($old_path,$new_path){
-        $fail_list=array();
 
+
+    public function rename($old_path,$new_path){
+       
         $res=$this->bfs->rename($old_path,$new_path);
         if ($res!=0) {
-            $fail_list[$old_path]=$this->getResponseStatus($res);
+            throw new IOException(sprintf('Rename file  "%s" failed, exception: %s.',
+             $old_path,$this->getResponseStatus($res)), 0, null, $old_path);
         }
 
 
-        return $fail_list;
+    }
+
+    public function chmod($mode,$path){
+
+        $res=$this->bfs->chmod($mode,$path);
+        if ($res!=0) {
+             throw new IOException(sprintf('Chmod  "%s" failed, exception: %s.',
+             $path,$this->getResponseStatus($res)), 0, null, $path);
+        }
 
     }
+
+    public function du($path){
+
+        $size=$this->bfs->du($path);
+        if($size!=0){
+            throw new IOException(sprintf('Compute disk usage  "%s" failed, exception: %s.',
+             $path,$this->getResponseStatus($size)), 0, null, $path);
+        }
+
+        return $size;
+
+    }
+
+
     public function exists($files){
         $maxPathLength = PHP_MAXPATHLEN - 2;
         foreach ($this->toIterable($files) as $file) {
@@ -91,43 +122,39 @@ class FileSystem
                 return false;
             }
         }
-
         return true;
 
     }
-    public function put($local,$bfs){
-        $fail_list=array();
 
+    public function put($local,$bfs){
+       
             $res=$this->bfs->put($local,$bfs);
             if ($res!=0) {
-                $fail_list[$bfs]=$this->exception[$res-1];
-            }
-
-
-        return $fail_list;
+                throw new IOException(sprintf('Put  "%s" to "%s" failed, exception: %s.',
+             $local,$bfs,$this->exception[$res-1]), 0, null, $local);
+            }        
 
     }
+
     public function get($bfs,$local){
-        $fail_list=array();
 
         $res=$this->bfs->get($bfs,$local);
         if ($res!=0) {
-            $fail_list[$bfs]=$this->exception[$res-1];
+              throw new IOException(sprintf(' Get "%s" from "%s" failed, exception: %s.',
+             $bfs,$local,$this->exception[$res-1]), 0, null, $bfs);
         }
-
-
-        return $fail_list;
 
     }
 
-    /**
-     * @param mixed $files
-     *
-     * @return array|\Traversable
-     */
-    private function toIterable($files)
-    {
-        return \is_array($files) || $files instanceof \Traversable ? $files : array($files);
+    public function status(){
+
+        $res=$this->bfs->status();
+        if (\is_numeric($res) {
+              throw new IOException(sprintf(' Get BFS status failed, exception: %s.'
+               ,$this->getResponseStatus($size), 0, null, null);
+        }
+        return $res;
+
     }
 
 

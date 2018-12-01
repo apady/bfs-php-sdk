@@ -383,8 +383,7 @@ PHP_METHOD(BFS, cat)
          RETURN_LONG(result);
 }
 PHP_METHOD(BFS, status)
-{
-       
+{     
      
        const char* status_result_string;
         long int ret;
@@ -395,7 +394,7 @@ PHP_METHOD(BFS, status)
         ret=bfs_status(obj->fs, status_result_string);
         if(status_result_string==NULL)
             RETURN_LONG(ret);
-        RETURN_STRING(status_result_string);
+       RETURN_STRING(status_result_string);
         
 }
 
@@ -485,13 +484,7 @@ PHP_MINFO_FUNCTION(bfs)
 	DISPLAY_INI_ENTRIES();
 	*/
 }
-/* }}} */
 
-/* {{{ bfs_functions[]
- *
- * Every user visible function must have an entry in bfs_functions[].
- */
-/* }}} */
 
 /* {{{ bfs_module_entry
  */

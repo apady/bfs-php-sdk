@@ -11,5 +11,8 @@
             "name": "Lishen Chen",
             "email": "frankchenls@outlook.com"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": { "BFS\\": "lib/" }
+    }
 }

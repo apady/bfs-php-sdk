@@ -3,7 +3,7 @@
     "description": "PHP SDK for Baidu File System.",
     "type": "library",
     "require": {
-        "php": "7.1"
+        "php": "^7.1"
     },
     "license": "MIT",
     "authors": [

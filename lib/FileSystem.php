@@ -159,6 +159,16 @@ class FileSystem
         return $res;
 
     }
+     /**
+     * @param mixed $files
+     *
+     * @return array|\Traversable
+     */
+    private function toIterable($files)
+    {
+        return \is_array($files) || $files instanceof \Traversable ? $files : array($files);
+    }
+
 
 
 

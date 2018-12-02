@@ -5,15 +5,15 @@
 namespace BFS\Exception;
 
 
-class FileNotFoundException extends IOException
+class ClientException extends IOException
 {
     public function __construct($message = null, $code = 0, \Exception $previous = null, $path = null)
     {
         if (null === $message) {
             if (null === $path) {
-                $message = 'File could not be found.';
+                $message = 'Valid BFS flag file required.';
             } else {
-                $message = sprintf('File "%s" could not be found.', $path);
+                $message = sprintf('Can not access BFS using "%s".', $path);
             }
         }
 

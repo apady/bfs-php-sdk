@@ -1,4 +1,4 @@
-# bfs-php-sdk
+# BFS-PHP-SDK
 PHP SDK for Baidu File System
 
 ## Dependency

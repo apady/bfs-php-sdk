@@ -7,7 +7,7 @@ set -x -e
 
 cd ~
 
-git clone https://github.com/apady/bfs-php-extension.git
+git checkout https://github.com/apady/bfs-php-extension.git
 
 cd bfs-php-extension
 

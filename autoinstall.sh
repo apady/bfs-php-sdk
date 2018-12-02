@@ -17,7 +17,7 @@ if [ ! -d "${WORK_DIR}/.git" ]; then
   cd -
 else
   cd bfs-php-extension
-  git checkout
+  git pull
   ./build.sh
   cd -  
 fi

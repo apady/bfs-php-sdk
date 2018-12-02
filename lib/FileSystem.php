@@ -5,7 +5,7 @@
 namespace BFS;
 
 use BFS\Exception\IOException;
-use BFS\Exception\FileNotFoundException;
+use BFS\Exception\ClientException;
 
 
 class FileSystem
@@ -40,7 +40,10 @@ class FileSystem
     public function __construct($bfs_flag_file_path){
 
         $this->bfs=new \BFS();
-        $this->bfs->init($bfs_flag_file_path);
+        if(!$this->bfs->init($bfs_flag_file_path)){
+            throw new ClientException(null, 0, null, $bfs_flag_file_path);
+
+        }
     }
 
 

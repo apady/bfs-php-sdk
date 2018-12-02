@@ -13,7 +13,9 @@ git clone https://github.com/apady/bfs-php-extension.git
 
 cd bfs-php-extension
 
-sudo ./build.sh
+chmod 755 build.sh
+
+./build.sh
 
 cd -
 

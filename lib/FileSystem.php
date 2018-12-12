@@ -36,7 +36,6 @@ class FileSystem
         return $this->response_list[-$result];
     }
 
-
     public function __construct($bfs_flag_file_path){
 
         $this->bfs=new \BFS();
@@ -46,11 +45,92 @@ class FileSystem
         }
     }
 
+    public function fopen($filename, $mode){
+        if($mode != "r" && $mode != "w")
+          throw new IOException(sprintf('Unsupported file mode "%s" ',$mode), 0, null, $filename);     
+        $res=$this->bfs->fopen($filename,$mode);
+        if(!$res){
+            throw new IOException(sprintf('Open  "%s" failed',
+             $filename), 0, null, $filename);           
+          }       
+    }
+
+    public function fclose(){
+        
+           $res=$this->bfs->fclose();
+           if($res!=0){
+            throw new IOException(sprintf('Close file failed, exception: %s.',
+             $this->getResponseStatus($res)), 0, null, $res);           
+           }
+        
+    }
+    /**
+     * @param string $buffer
+     *
+     * @return successfully written buffer length
+     */
+    public function fwrite($buffer){
+        
+           $res=$this->bfs->fwrite($buffer);
+           if($res< 0){
+            throw new IOException(sprintf('Write buffer %s failed, exception: %s.',
+             $buffer,$this->getResponseStatus($res)), 0, null, $buffer);    
+          }
+          return $res;
+        
+    }
+    public function fread($length){
+        
+           $res=$this->bfs->fread($length);
+           if($res==null){
+             throw new IOException(sprintf('Read file failed, unknown error.'), 0, null, null);   
+           }
+           if(\is_numeric($res)){
+            throw new IOException(sprintf('Read file for length  "%s" failed, exception: %s.',
+             $length,$this->getResponseStatus($res)), 0, null, $length);   
+          }
+          return $res;
+        
+    }
+    /**
+     *
+     * @return read offset
+     */
+    public function fseek($offset,$whense=null){
+        
+           $res=$this->bfs->fseek($offset,$whense);
+           if($res < 0){
+            throw new IOException(sprintf('Set file pointer "%s" failed, exception: %s.',$offset,$this->getResponseStatus($res)), 0, null, $offset);
+          }
+          return $res;
+        
+    }
+
+    public function touchz($file){
+        
+           $res=$this->bfs->touchz($file);
+           if($res < 0){
+            throw new IOException(sprintf('Touch file "%s" failed, exception: %s.',
+             $file,$this->getResponseStatus($res)), 0, null, $file);
+            
+           }
+        
+    }
+    public function cat($file){
+        
+          return  $res=$this->bfs->cat($file);       
+    }
+
+    public function ls($path){
+        
+          return  $res=$this->bfs->ls($path);       
+    }
+
 
     public function mkdir($dir){
         
            $res=$this->bfs->mkdir($dir);
-           if($res!=0){
+           if($res < 0){
             throw new IOException(sprintf('Create Directory  "%s" failed, exception: %s.',
              $dir,$this->getResponseStatus($res)), 0, null, $dir);
             
@@ -59,10 +139,11 @@ class FileSystem
     }
 
 
+
     public function rmdir($dir,$recursive=true){
                
             $res=$this->bfs->rmdir($dir,$recursive);
-            if($res!=0){
+            if($res < 0){
                  throw new IOException(sprintf('Remove Directory  "%s" failed, exception: %s.',
              $dir,$this->getResponseStatus($res)), 0, null, $dir);
             }
@@ -73,7 +154,7 @@ class FileSystem
     public function remove($file){
              
             $res=$this->bfs->remove($file);
-            if($res!=0){
+            if($res < 0){
              throw new IOException(sprintf('Remove file  "%s" failed, exception: %s.',
              $file,$this->getResponseStatus($res)), 0, null, $file);
             }      
@@ -83,18 +164,33 @@ class FileSystem
     public function rename($old_path,$new_path){
        
         $res=$this->bfs->rename($old_path,$new_path);
-        if ($res!=0) {
+        if ($res < 0) {
             throw new IOException(sprintf('Rename file  "%s" failed, exception: %s.',
              $old_path,$this->getResponseStatus($res)), 0, null, $old_path);
         }
 
 
     }
+    public function symlink($src,$dst){
+       
+        $res=$this->bfs->symlink($src,$dst);
+        if ($res < 0) {
+            throw new IOException(sprintf('symlink "%s" to "%s" failed, exception: %s.',
+             $src,$dst,$this->getResponseStatus($res)), 0, null, $src);
+        }
 
+
+    }
+
+    /**
+     * @param string $mode
+     * @param string $path
+     * 
+     */
     public function chmod($mode,$path){
 
         $res=$this->bfs->chmod($mode,$path);
-        if ($res!=0) {
+        if ($res < 0) {
              throw new IOException(sprintf('Chmod  "%s" failed, exception: %s.',
              $path,$this->getResponseStatus($res)), 0, null, $path);
         }
@@ -104,12 +200,23 @@ class FileSystem
     public function du($path){
 
         $size=$this->bfs->du($path);
-        if($size!=0){
+        if($size < 0){
             throw new IOException(sprintf('Compute disk usage  "%s" failed, exception: %s.',
              $path,$this->getResponseStatus($size)), 0, null, $path);
         }
 
         return $size;
+
+    }
+    public function changeReplicaNum($path,$replicaNum){
+
+        $res=$this->bfs->changeReplicaNum($path,$replicaNum);
+        if($res < 0){
+            throw new IOException(sprintf('Change ReplicaNumber for "%s" failed, exception: %s.',
+             $path,$this->getResponseStatus($res)), 0, null, $path);
+        }
+
+        return $res;
 
     }
 
@@ -157,8 +264,8 @@ class FileSystem
                ,$this->getResponseStatus($res),0, null, null));
         }
         return $res;
-
     }
+
      /**
      * @param mixed $files
      *
@@ -169,7 +276,5 @@ class FileSystem
         return \is_array($files) || $files instanceof \Traversable ? $files : array($files);
     }
 
-
-
-
 }
+

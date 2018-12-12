@@ -5,7 +5,22 @@ PHP SDK for Baidu File System
 ```
 composer require apady/bfs-php-sdk
 ```
+## Usage
+```php
 
+use BFS\FileSystem;
+use BFS\Exception\IOExceptionInterface;
+
+try{
+  $bfs=new FileSystem('/home/bfs/sandbox/bfs.flag');
+  $bfs->mkdir("/test");
+  $bfs->fopen("/test/apady.txt","w");
+	$bfs->fwrite("hello apady!!\n");
+  $bfs->fclose();
+}catch(IOExceptionInterface $exception){
+	echo $exception->getMessage();
+}
+```
 ## Dependency
 BFS SDK now offers `C/C++` API, as a result, using `BFS-PHP-SDK` resquires a [BFS PHP EXTENSION](https://github.com/apady/bfs-php-extension) as fundamental support. Running the following script can automatically install the php extension.
 ```
